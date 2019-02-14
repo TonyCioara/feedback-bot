@@ -2,7 +2,7 @@ package utils
 
 import "github.com/nlopes/slack"
 
-func generateHelpButtons() slack.Attachment {
+func GenerateHelpButtons() slack.Attachment {
 
 	action1 := slack.AttachmentAction{
 		Name:  "option",

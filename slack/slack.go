@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TonyCioara/feedback-bot/utils"
 	"github.com/nlopes/slack"
 )
 
@@ -56,7 +57,7 @@ func sendHelp(slackClient *slack.RTM, message, slackChannel string) {
 	if strings.ToLower(message) != "help" {
 		return
 	}
-	// attachment := utils.generateHelpButtons()
+	attachment := utils.GenerateHelpButtons()
 	response := "What can I help you with?"
 	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
 }
@@ -72,7 +73,7 @@ func sendResponse(slackClient *slack.RTM, message, slackChannel string) {
 
 func greet(slackClient *slack.RTM, slackChannel string) {
 
-	// attachment := utils.generateHelpButtons()
+	attachment := utils.GenerateHelpButtons()
 	response := "What can I help you with?"
 	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
 }

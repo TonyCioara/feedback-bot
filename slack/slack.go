@@ -56,7 +56,7 @@ func sendHelp(slackClient *slack.RTM, message, slackChannel string) {
 	if strings.ToLower(message) != "help" {
 		return
 	}
-	attachment := generateAttachment()
+	// attachment := utils.generateHelpButtons()
 	response := "What can I help you with?"
 	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
 }
@@ -72,33 +72,7 @@ func sendResponse(slackClient *slack.RTM, message, slackChannel string) {
 
 func greet(slackClient *slack.RTM, slackChannel string) {
 
-	attachment := generateAttachment()
+	// attachment := utils.generateHelpButtons()
 	response := "What can I help you with?"
 	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
-}
-
-func generateAttachment() slack.Attachment {
-
-	action1 := slack.AttachmentAction{
-		Name:  "option",
-		Text:  "Send Feedback",
-		Type:  "button",
-		Value: "sendFeedback",
-	}
-	action2 := slack.AttachmentAction{
-		Name:  "option",
-		Text:  "See My Feedback",
-		Type:  "button",
-		Value: "seeFeedback",
-	}
-
-	attachment := slack.Attachment{
-		Text:       "Pick an option",
-		Color:      "#3AA3E3",
-		Fallback:   "You are unable to select at option",
-		CallbackID: "helpButton",
-		Actions:    []slack.AttachmentAction{action1, action2},
-	}
-
-	return attachment
 }

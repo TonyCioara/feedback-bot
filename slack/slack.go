@@ -1,11 +1,15 @@
 package slack
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/TonyCioara/feedback-bot/utils"
 	"github.com/nlopes/slack"
+	"github.com/nlopes/slack/slackevents"
 )
 
 /*
@@ -25,6 +29,28 @@ func CreateSlackClient(apiKey string) *slack.RTM {
 	rtm := api.NewRTM()
 	go rtm.ManageConnection() // goroutine!
 	return rtm
+}
+
+func SetUpEventsAPI(apiKey string) {
+	fmt.Println("1) Seting up")
+	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("2) Receiving")
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(r.Body)
+		body := buf.String()
+		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: apiKey}))
+		if e != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		if eventsAPIEvent.Type == slackevents.CallbackEvent {
+			var r *slackevents.ChallengeResponse
+			err := json.Unmarshal([]byte(body), &r)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+			fmt.Println("Callback:", r)
+		}
+	})
 }
 
 /*
@@ -61,8 +87,6 @@ func sendHelp(slackClient *slack.RTM, message, slackChannel string) {
 	response := "What can I help you with?"
 	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
 }
-
-// sendResponse is NOT unimplemented --- write code in the function body to complete!
 
 func sendResponse(slackClient *slack.RTM, message, slackChannel string) {
 	command := strings.ToLower(message)

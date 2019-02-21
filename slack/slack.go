@@ -27,13 +27,13 @@ const helpMessage = "type in '@feedback-bot'"
 */
 func CreateSlackClient(apiKey string) *slack.RTM {
 	api := slack.New(apiKey)
-	go SetUpEventsAPI()
+	go SetUpEventsAPI(api)
 	rtm := api.NewRTM()
 	go rtm.ManageConnection() // goroutine!
 	return rtm
 }
 
-func SetUpEventsAPI() {
+func SetUpEventsAPI(api *slack.Client) {
 	fmt.Println("1) Seting up")
 	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
 		token := os.Getenv("VERIFICATION_TOKEN")
@@ -50,12 +50,8 @@ func SetUpEventsAPI() {
 		}
 
 		if actionEvent.Type == "interactive_message" {
-			fmt.Println(actionEvent)
+			controllers.ButtonClicked(api, actionEvent)
 		}
-		// if eventsAPIEvent.Type == slackevents.CallbackEvent {
-		// 	innerEvent := eventsAPIEvent.InnerEvent
-		// 	fmt.Println("Callback:", innerEvent)
-		// }
 	})
 	fmt.Println("[INFO] Server listening")
 	http.ListenAndServe(":3000", nil)

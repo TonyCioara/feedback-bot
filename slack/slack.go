@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/TonyCioara/feedback-bot/utils"
+	"github.com/TonyCioara/feedback-bot/controllers"
 	"github.com/nlopes/slack"
 	"github.com/nlopes/slack/slackevents"
 )
@@ -33,34 +33,25 @@ func CreateSlackClient(apiKey string) *slack.RTM {
 	return rtm
 }
 
-type Slack struct {
-	Payload string `json:"payload"`
-}
-
 func SetUpEventsAPI() {
 	fmt.Println("1) Seting up")
 	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
 		token := os.Getenv("VERIFICATION_TOKEN")
-		// buf := new(bytes.Buffer)
-		// buf.ReadFrom(r.Body)
 
 		data, _ := ioutil.ReadAll(r.Body)
 		body := string(data)
 		body, _ = url.QueryUnescape(body)
 		body = strings.Replace(body, "payload=", "", 1)
-		fmt.Println(body)
 
-		// body = strings.Replace(body, "payload=", "", 1)
-		// fmt.Println("weee:", body)
-		// 	// we := make(map[interface{}]interface{})
-		// 	// json.NewDecoder(r.Body).Decode(&we)
-		// 	// fmt.Println("weee:", we)
 		actionEvent, e := slackevents.ParseActionEvent(body, slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: token}))
 		if e != nil {
-			fmt.Println("Something went wrong: ", e, "\n", actionEvent)
+			fmt.Println("Something went wrong: ", e)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		fmt.Println("Event", actionEvent)
+
+		if actionEvent.Type == "interactive_message" {
+			fmt.Println(actionEvent)
+		}
 		// if eventsAPIEvent.Type == slackevents.CallbackEvent {
 		// 	innerEvent := eventsAPIEvent.InnerEvent
 		// 	fmt.Println("Callback:", innerEvent)
@@ -88,37 +79,9 @@ func RespondToEvents(slackClient *slack.RTM) {
 			// message := strings.Replace(ev.Msg.Text, botTagString, "", -1)
 			message := ev.Msg.Text
 
-			sendHelp(slackClient, message, ev.Channel)
+			controllers.SendHelp(slackClient, message, ev.Channel)
 		case *slack.IMCreatedEvent:
-			greet(slackClient, ev.Channel.ID)
+			controllers.Greet(slackClient, ev.Channel.ID)
 		}
 	}
-}
-
-// sendHelp is a working help message, for reference.
-func sendHelp(slackClient *slack.RTM, message, slackChannel string) {
-	if strings.ToLower(message) != "help" {
-		return
-	}
-	attachment := utils.GenerateHelpButtons()
-	response := "What can I help you with?"
-	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
-}
-
-func sendResponse(slackClient *slack.RTM, message, slackChannel string) {
-	command := strings.ToLower(message)
-	println("[RECEIVED] sendResponse:", command)
-
-	slackClient.SendMessage(slackClient.NewOutgoingMessage("I Like pizza", slackChannel))
-}
-
-func greet(slackClient *slack.RTM, slackChannel string) {
-
-	attachment := utils.GenerateHelpButtons()
-	response := "What can I help you with?"
-	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
-}
-
-func sendSurvey() {
-
 }

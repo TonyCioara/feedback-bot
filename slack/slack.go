@@ -1,16 +1,16 @@
 package slack
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
-
-	"github.com/nlopes/slack/slackevents"
 
 	"github.com/TonyCioara/feedback-bot/utils"
 	"github.com/nlopes/slack"
+	"github.com/nlopes/slack/slackevents"
 )
 
 /*
@@ -27,29 +27,44 @@ const helpMessage = "type in '@feedback-bot'"
 */
 func CreateSlackClient(apiKey string) *slack.RTM {
 	api := slack.New(apiKey)
-	go SetUpEventsAPI(apiKey)
+	go SetUpEventsAPI()
 	rtm := api.NewRTM()
 	go rtm.ManageConnection() // goroutine!
 	return rtm
 }
 
-func SetUpEventsAPI(apiKey string) {
+type Slack struct {
+	Payload string `json:"payload"`
+}
+
+func SetUpEventsAPI() {
 	fmt.Println("1) Seting up")
 	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("2) Receiving")
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(r.Body)
-		body := buf.String()
+		token := os.Getenv("VERIFICATION_TOKEN")
+		// buf := new(bytes.Buffer)
+		// buf.ReadFrom(r.Body)
 
-		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: apiKey}))
+		data, _ := ioutil.ReadAll(r.Body)
+		body := string(data)
+		body, _ = url.QueryUnescape(body)
+		body = strings.Replace(body, "payload=", "", 1)
+		fmt.Println(body)
+
+		// body = strings.Replace(body, "payload=", "", 1)
+		// fmt.Println("weee:", body)
+		// 	// we := make(map[interface{}]interface{})
+		// 	// json.NewDecoder(r.Body).Decode(&we)
+		// 	// fmt.Println("weee:", we)
+		actionEvent, e := slackevents.ParseActionEvent(body, slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: token}))
 		if e != nil {
-			fmt.Println("Something went wrong: ", e, "\n", eventsAPIEvent)
+			fmt.Println("Something went wrong: ", e, "\n", actionEvent)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		if eventsAPIEvent.Type == slackevents.CallbackEvent {
-			innerEvent := eventsAPIEvent.InnerEvent
-			fmt.Println("Callback:", innerEvent)
-		}
+		fmt.Println("Event", actionEvent)
+		// if eventsAPIEvent.Type == slackevents.CallbackEvent {
+		// 	innerEvent := eventsAPIEvent.InnerEvent
+		// 	fmt.Println("Callback:", innerEvent)
+		// }
 	})
 	fmt.Println("[INFO] Server listening")
 	http.ListenAndServe(":3000", nil)

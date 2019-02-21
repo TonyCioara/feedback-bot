@@ -20,7 +20,7 @@ func GenerateHelpButtons() slack.Attachment {
 	attachment := slack.Attachment{
 		Text:       "Pick an option",
 		Color:      "#3AA3E3",
-		Fallback:   "You are unable to select at option",
+		Fallback:   "You are unable to select an option",
 		CallbackID: "helpButton",
 		Actions:    []slack.AttachmentAction{action1, action2},
 	}

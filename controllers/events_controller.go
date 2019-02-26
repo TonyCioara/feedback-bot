@@ -17,6 +17,11 @@ func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
 	}
 }
 
+// DialogReceived is responsible for handling received dialogs
+func DialogReceived(api *slack.Client, action slackevents.MessageAction) {
+	fmt.Println("Dialog:", action)
+}
+
 // SendFeedbackSurvey sends the user a feedback survey
 func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 	fmt.Println("------GOT HERE-----")

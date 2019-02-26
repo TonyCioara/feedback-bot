@@ -4,6 +4,8 @@ require (
 	github.com/cosiner/argv v0.0.1 // indirect
 	github.com/go-delve/delve v1.2.0 // indirect
 	github.com/gorilla/websocket v1.4.0 // indirect
+	github.com/jinzhu/gorm v1.9.2
+	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect

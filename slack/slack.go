@@ -48,11 +48,17 @@ func SetUpEventsAPI(api *slack.Client) {
 			fmt.Println("Something went wrong: ", e)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
+		fmt.Println("actionEventHappened:", actionEvent.Type)
 
-		if actionEvent.Type == "interactive_message" {
+		switch atype := actionEvent.Type; atype {
+		case "interactive_message":
 			controllers.ButtonClicked(api, actionEvent)
+		case "dialog_submission":
+			controllers.DialogReceived(api, actionEvent)
 		}
+
 	})
+
 	fmt.Println("[INFO] Server listening")
 	http.ListenAndServe(":3000", nil)
 }

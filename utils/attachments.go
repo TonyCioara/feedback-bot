@@ -55,24 +55,28 @@ func GenerateFeedbackSurvey(triggerID, callbackID string) slack.Dialog {
 		},
 	}
 	var dialogElement3 slack.DialogElement = map[string]string{
-		"type":  "text",
-		"label": "If you selected others please elaborate",
-		"name":  "other",
+		"type":     "text",
+		"label":    "If you selected others please elaborate",
+		"name":     "other",
+		"optional": "true",
 	}
 	var dialogElement4 slack.DialogElement = map[string]string{
-		"type":  "textarea",
-		"label": "What has the person done that was good?",
-		"name":  "good",
+		"type":     "textarea",
+		"label":    "What has the person done that was good?",
+		"name":     "good",
+		"optional": "true",
 	}
 	var dialogElement5 slack.DialogElement = map[string]string{
-		"type":  "textarea",
-		"label": "What could the person do to improve?",
-		"name":  "better",
+		"type":     "textarea",
+		"label":    "What could the person do to improve?",
+		"name":     "better",
+		"optional": "true",
 	}
 	var dialogElement6 slack.DialogElement = map[string]string{
-		"type":  "textarea",
-		"label": "What has the person done that was best?",
-		"name":  "best",
+		"type":     "textarea",
+		"label":    "What has the person done that was best?",
+		"name":     "best",
+		"optional": "true",
 	}
 
 	dialogElements := []slack.DialogElement{dialogElement1, dialogElement2,

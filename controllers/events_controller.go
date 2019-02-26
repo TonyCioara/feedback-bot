@@ -18,16 +18,30 @@ func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
 // SendFeedbackSurvey sends the user a feedback survey
 func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 	fmt.Println("------GOT HERE-----")
+
+	var dialogElement1 slack.DialogElement = map[string]string{
+		"type":  "text",
+		"label": "Pickup Location",
+		"name":  "loc_origin",
+	}
+	var dialogElement2 slack.DialogElement = map[string]string{
+		"type":  "text",
+		"label": "Pickup Location",
+		"name":  "loc_origi2n",
+	}
+
+	dialogElements := []slack.DialogElement{dialogElement1, dialogElement2}
+
 	dialog := slack.Dialog{
 		TriggerID:      action.TriggerID,
 		CallbackID:     action.CallbackID,
 		Title:          "Submit Feedback",
 		SubmitLabel:    "SubmitLabel",
 		NotifyOnCancel: true,
-		Elements:       []slack.DialogElement{},
+		Elements:       dialogElements,
 	}
 
 	err := api.OpenDialog(action.TriggerID, dialog)
 
-	fmt.Println("123:", err)
+	fmt.Println("32. Error:", err)
 }

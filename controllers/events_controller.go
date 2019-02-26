@@ -3,6 +3,8 @@ package controllers
 import (
 	"fmt"
 
+	"github.com/TonyCioara/feedback-bot/utils"
+
 	"github.com/nlopes/slack"
 	"github.com/nlopes/slack/slackevents"
 )
@@ -19,27 +21,7 @@ func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
 func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 	fmt.Println("------GOT HERE-----")
 
-	var dialogElement1 slack.DialogElement = map[string]string{
-		"type":  "text",
-		"label": "Pickup Location",
-		"name":  "loc_origin",
-	}
-	var dialogElement2 slack.DialogElement = map[string]string{
-		"type":  "text",
-		"label": "Pickup Location",
-		"name":  "loc_origi2n",
-	}
-
-	dialogElements := []slack.DialogElement{dialogElement1, dialogElement2}
-
-	dialog := slack.Dialog{
-		TriggerID:      action.TriggerID,
-		CallbackID:     action.CallbackID,
-		Title:          "Submit Feedback",
-		SubmitLabel:    "SubmitLabel",
-		NotifyOnCancel: true,
-		Elements:       dialogElements,
-	}
+	dialog := utils.GenerateFeedbackSurvey(action.TriggerID, action.CallbackID)
 
 	err := api.OpenDialog(action.TriggerID, dialog)
 

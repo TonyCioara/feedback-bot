@@ -27,3 +27,64 @@ func GenerateHelpButtons() slack.Attachment {
 
 	return attachment
 }
+
+func GenerateFeedbackSurvey(triggerID, callbackID string) slack.Dialog {
+	var dialogElement1 slack.DialogElement = map[string]string{
+		"type":        "select",
+		"label":       "Who is this feedback for?",
+		"name":        "selectUser",
+		"data_source": "users",
+	}
+	var dialogElement2 slack.DialogElement = map[string]interface{}{
+		"type":  "select",
+		"label": "What is this feedback for?",
+		"name":  "feedbackType",
+		"options": []map[string]string{
+			{
+				"label": "Intensives",
+				"value": "intensives",
+			},
+			{
+				"label": "Unconferences and Lightning talks",
+				"value": "unconferences",
+			},
+			{
+				"label": "Other",
+				"value": "other",
+			},
+		},
+	}
+	var dialogElement3 slack.DialogElement = map[string]string{
+		"type":  "text",
+		"label": "If you selected others please elaborate",
+		"name":  "other",
+	}
+	var dialogElement4 slack.DialogElement = map[string]string{
+		"type":  "textarea",
+		"label": "What has the person done that was good?",
+		"name":  "good",
+	}
+	var dialogElement5 slack.DialogElement = map[string]string{
+		"type":  "textarea",
+		"label": "What could the person do to improve?",
+		"name":  "better",
+	}
+	var dialogElement6 slack.DialogElement = map[string]string{
+		"type":  "textarea",
+		"label": "What has the person done that was best?",
+		"name":  "best",
+	}
+
+	dialogElements := []slack.DialogElement{dialogElement1, dialogElement2,
+		dialogElement3, dialogElement4, dialogElement5, dialogElement6}
+
+	dialog := slack.Dialog{
+		TriggerID:      triggerID,
+		CallbackID:     callbackID,
+		Title:          "Submit Feedback",
+		SubmitLabel:    "Submit",
+		NotifyOnCancel: true,
+		Elements:       dialogElements,
+	}
+	return dialog
+}

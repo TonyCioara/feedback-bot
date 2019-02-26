@@ -26,6 +26,8 @@ func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 		NotifyOnCancel: true,
 		Elements:       []slack.DialogElement{},
 	}
+e
 	err := api.OpenDialog(action.TriggerID, dialog)
-	fmt.Println("ERROR:", err)
+
+	fmt.Println("123:", err)
 }

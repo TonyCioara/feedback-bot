@@ -33,6 +33,10 @@ func CreateSlackClient(apiKey string) *slack.RTM {
 	return rtm
 }
 
+type EType struct {
+	EType string `json:"type"`
+}
+
 func SetUpEventsAPI(api *slack.Client) {
 	fmt.Println("1) Seting up")
 	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
@@ -43,6 +47,7 @@ func SetUpEventsAPI(api *slack.Client) {
 		body, _ = url.QueryUnescape(body)
 		body = strings.Replace(body, "payload=", "", 1)
 
+		// Update to check type, then parse into custom model for dialogs and actionEvent for actionEvent
 		actionEvent, e := slackevents.ParseActionEvent(body, slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: token}))
 		if e != nil {
 			fmt.Println("Something went wrong: ", e)
@@ -50,11 +55,11 @@ func SetUpEventsAPI(api *slack.Client) {
 		}
 		fmt.Println("actionEventHappened:", actionEvent.Type)
 
-		switch atype := actionEvent.Type; atype {
+		switch et := actionEvent.Type; et {
 		case "interactive_message":
 			controllers.ButtonClicked(api, actionEvent)
 		case "dialog_submission":
-			controllers.DialogReceived(api, actionEvent)
+			controllers.DialogReceived(api, body)
 		}
 
 	})

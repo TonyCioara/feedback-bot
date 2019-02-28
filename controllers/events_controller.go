@@ -38,7 +38,6 @@ func DialogReceived(api *slack.Client, payloadString string) {
 		panic("failed to connect database")
 	}
 	defer db.Close()
-	// Migrate the schema
 	db.AutoMigrate(&models.Feedback{})
 
 	ftype := dialog.Submission["feedbackType"]
@@ -56,7 +55,6 @@ func DialogReceived(api *slack.Client, payloadString string) {
 		FeedbackType: ftype,
 	}
 
-	fmt.Println("Feedback:", feedback)
 	db.Create(&feedback)
 
 }

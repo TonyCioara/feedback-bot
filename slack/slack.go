@@ -57,9 +57,9 @@ func SetUpEventsAPI(api *slack.Client) {
 
 		switch et := actionEvent.Type; et {
 		case "interactive_message":
-			controllers.ButtonClicked(api, actionEvent)
+			go controllers.ButtonClicked(api, actionEvent)
 		case "dialog_submission":
-			controllers.DialogReceived(api, body)
+			go controllers.DialogReceived(api, body)
 		}
 
 	})
@@ -86,9 +86,9 @@ func RespondToEvents(slackClient *slack.RTM) {
 			// message := strings.Replace(ev.Msg.Text, botTagString, "", -1)
 			message := ev.Msg.Text
 
-			controllers.SendHelp(slackClient, message, ev.Channel)
+			go controllers.SendHelp(slackClient, message, ev.Channel)
 		case *slack.IMCreatedEvent:
-			controllers.Greet(slackClient, ev.Channel.ID)
+			go controllers.Greet(slackClient, ev.Channel.ID)
 		}
 	}
 }

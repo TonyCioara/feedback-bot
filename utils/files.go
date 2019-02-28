@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// DeleteFile deletes a file
 func DeleteFile(path string) {
 	// delete file
 	err := os.Remove(path)

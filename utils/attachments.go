@@ -2,6 +2,7 @@ package utils
 
 import "github.com/nlopes/slack"
 
+// GenerateHelpButtons generates help buttons
 func GenerateHelpButtons() slack.Attachment {
 
 	action1 := slack.AttachmentAction{
@@ -28,6 +29,7 @@ func GenerateHelpButtons() slack.Attachment {
 	return attachment
 }
 
+// GenerateFeedbackSurvey generates a feedback survey
 func GenerateFeedbackSurvey(triggerID, callbackID string) slack.Dialog {
 	var dialogElement1 slack.DialogElement = map[string]string{
 		"type":        "select",

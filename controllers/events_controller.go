@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/TonyCioara/feedback-bot/models"
@@ -31,14 +31,15 @@ func DialogReceived(api *slack.Client, payloadString string) {
 	dialog := models.DialogSubmission{}
 	err := json.Unmarshal(byteString, &dialog)
 	if err != nil {
-		fmt.Println("Dialog parsing error", err)
+		log.Fatalf("Dialog parsing error: %s", err)
 		return
 	}
 
 	// Save feedback in DB
 	db, err := gorm.Open("sqlite3", "feedback-bot.db")
 	if err != nil {
-		panic("failed to connect database")
+		log.Fatalf("failed to connect database")
+		return
 	}
 	defer db.Close()
 	db.AutoMigrate(&models.Feedback{})
@@ -69,7 +70,7 @@ func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 
 	err := api.OpenDialog(action.TriggerID, dialog)
 
-	fmt.Println("Error sending survey:", err)
+	log.Fatalf("Error sending survey: %s", err)
 }
 
 // SendFeedbackCSV sends a user all of their feedback
@@ -104,10 +105,10 @@ func SendFeedbackCSV(api *slack.Client, action slackevents.MessageAction) {
 	}
 	file, err := api.UploadFile(params)
 	if err != nil {
-		fmt.Printf("%s\n", err)
+		log.Fatalf("%s\n", err)
 		return
 	}
-	fmt.Printf("Name: %s, URL: %s\n", file.Name, file.URL)
+	log.Fatalf("Name: %s, URL: %s\n", file.Name, file.URL)
 
 	utils.DeleteFile("./" + csvName)
 }

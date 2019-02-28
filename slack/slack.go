@@ -3,6 +3,7 @@ package slack
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -16,8 +17,8 @@ import (
 const helpMessage = "type in '@feedback-bot'"
 
 /*
-	CreateSlackClient sets up the slack RTM (real-timemessaging) client library,
-	initiating the socket connection and returning the client.
+CreateSlackClient sets up the slack RTM (real-timemessaging) client library,
+initiating the socket connection and returning the client.
 */
 func CreateSlackClient(apiKey string) *slack.RTM {
 	api := slack.New(apiKey)
@@ -27,10 +28,7 @@ func CreateSlackClient(apiKey string) *slack.RTM {
 	return rtm
 }
 
-type EType struct {
-	EType string `json:"type"`
-}
-
+// SetUpEventsAPI sets up the events api
 func SetUpEventsAPI(api *slack.Client) {
 	fmt.Println("1) Seting up")
 	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
@@ -44,10 +42,10 @@ func SetUpEventsAPI(api *slack.Client) {
 		// Update to check type, then parse into custom model for dialogs and actionEvent for actionEvent
 		actionEvent, e := slackevents.ParseActionEvent(body, slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: token}))
 		if e != nil {
-			fmt.Println("Something went wrong: ", e)
+			log.Fatalf("Something went wrong: %s", e)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		fmt.Println("actionEventHappened:", actionEvent.Type)
+		log.Fatalf("actionEventHappened: %s", actionEvent.Type)
 
 		switch et := actionEvent.Type; et {
 		case "interactive_message":
@@ -63,8 +61,8 @@ func SetUpEventsAPI(api *slack.Client) {
 }
 
 /*
-	RespondToEvents waits for messages on the Slack client's incomingEvents channel,
-	and sends a response when it detects the bot has been tagged in a message with @<botTag>.
+RespondToEvents waits for messages on the Slack client's incomingEvents channel,
+and sends a response when it detects the bot has been tagged in a message with @<botTag>.
 */
 func RespondToEvents(slackClient *slack.RTM) {
 	for msg := range slackClient.IncomingEvents {

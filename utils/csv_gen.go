@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// WriteCSV writes a csv
 func WriteCSV(name string, rows [][]string) {
 
 	f, err := os.Create(name)

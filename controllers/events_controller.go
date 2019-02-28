@@ -70,7 +70,9 @@ func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 
 	err := api.OpenDialog(action.TriggerID, dialog)
 
-	log.Fatalf("Error sending survey: %s", err)
+	if err != nil {
+		log.Fatalf("Error sending survey: %s", err)
+	}
 }
 
 // SendFeedbackCSV sends a user all of their feedback
@@ -103,12 +105,11 @@ func SendFeedbackCSV(api *slack.Client, action slackevents.MessageAction) {
 		Filename: csvName,
 		Channels: []string{action.User.ID},
 	}
-	file, err := api.UploadFile(params)
+	_, err = api.UploadFile(params)
 	if err != nil {
 		log.Fatalf("%s\n", err)
 		return
 	}
-	log.Fatalf("Name: %s, URL: %s\n", file.Name, file.URL)
 
 	utils.DeleteFile("./" + csvName)
 }

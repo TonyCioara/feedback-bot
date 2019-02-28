@@ -45,7 +45,6 @@ func SetUpEventsAPI(api *slack.Client) {
 			log.Fatalf("Something went wrong: %s", e)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		log.Fatalf("actionEventHappened: %s", actionEvent.Type)
 
 		switch et := actionEvent.Type; et {
 		case "interactive_message":

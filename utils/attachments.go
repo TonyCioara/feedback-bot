@@ -49,6 +49,18 @@ func GenerateFeedbackSurvey(triggerID, callbackID string) slack.Dialog {
 				"value": "unconferences",
 			},
 			{
+				"label": "Project",
+				"value": "project",
+			},
+			{
+				"label": "Class",
+				"value": "class",
+			},
+			{
+				"label": "Coaching",
+				"value": "coaching",
+			},
+			{
 				"label": "Other",
 				"value": "other",
 			},

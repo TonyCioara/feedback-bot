@@ -13,17 +13,11 @@ import (
 	"github.com/nlopes/slack/slackevents"
 )
 
-/*
-   TODO: Change @BOT_NAME to the same thing you entered when creating your Slack application.
-   NOTE: command_arg_1 and command_arg_2 represent optional parameteras that you define
-   in the Slack API UI
-*/
 const helpMessage = "type in '@feedback-bot'"
 
 /*
-   CreateSlackClient sets up the slack RTM (real-timemessaging) client library,
-   initiating the socket connection and returning the client.
-   DO NOT EDIT THIS FUNCTION. This is a fully complete implementation.
+	CreateSlackClient sets up the slack RTM (real-timemessaging) client library,
+	initiating the socket connection and returning the client.
 */
 func CreateSlackClient(apiKey string) *slack.RTM {
 	api := slack.New(apiKey)
@@ -69,10 +63,8 @@ func SetUpEventsAPI(api *slack.Client) {
 }
 
 /*
-   RespondToEvents waits for messages on the Slack client's incomingEvents channel,
-   and sends a response when it detects the bot has been tagged in a message with @<botTag>.
-
-   EDIT THIS FUNCTION IN THE SPACE INDICATED ONLY!
+	RespondToEvents waits for messages on the Slack client's incomingEvents channel,
+	and sends a response when it detects the bot has been tagged in a message with @<botTag>.
 */
 func RespondToEvents(slackClient *slack.RTM) {
 	for msg := range slackClient.IncomingEvents {

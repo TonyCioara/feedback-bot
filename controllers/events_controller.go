@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/TonyCioara/feedback-bot/models"
 	"github.com/TonyCioara/feedback-bot/utils"
@@ -19,6 +20,8 @@ func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
 	switch value := action.Actions[0].Value; value {
 	case "sendFeedback":
 		SendFeedbackSurvey(api, action)
+	case "seeFeedback":
+		SendFeedbackCSV(api, action)
 	}
 }
 
@@ -67,4 +70,44 @@ func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 	err := api.OpenDialog(action.TriggerID, dialog)
 
 	fmt.Println("Error sending survey:", err)
+}
+
+// SendFeedbackCSV sends a user all of their feedback
+func SendFeedbackCSV(api *slack.Client, action slackevents.MessageAction) {
+
+	db, err := gorm.Open("sqlite3", "feedback-bot.db")
+	if err != nil {
+		panic("failed to connect database")
+	}
+	defer db.Close()
+	db.AutoMigrate(&models.Feedback{})
+
+	var feedbacks []models.Feedback
+
+	db.Where("user_id = ?", action.User.ID).Find(&feedbacks)
+
+	csvName := "Feedback_" + action.User.Name + "_" + time.Now().Format("2006-01-02")
+	row1 := []string{"Created", "Sender", "Type", "Good", "Better", "Best"}
+	rows := [][]string{row1}
+	for _, feedback := range feedbacks {
+		row := []string{feedback.CreatedAt.Format("2006-01-02"), feedback.SenderName,
+			feedback.FeedbackType, feedback.Good, feedback.Better, feedback.Best}
+		rows = append(rows, row)
+	}
+	utils.WriteCSV(csvName, rows)
+
+	params := slack.FileUploadParameters{
+		Title:    csvName,
+		File:     csvName,
+		Filename: csvName,
+		Channels: []string{action.User.ID},
+	}
+	file, err := api.UploadFile(params)
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		return
+	}
+	fmt.Printf("Name: %s, URL: %s\n", file.Name, file.URL)
+
+	utils.DeleteFile("./" + csvName)
 }

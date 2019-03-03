@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/TonyCioara/feedback-bot/utils"
@@ -14,6 +15,7 @@ func SendHelp(slackClient *slack.RTM, message, slackChannel string) {
 	}
 	attachment := utils.GenerateHelpButtons()
 	response := "What can I help you with?"
+	fmt.Println("Channel:", slackChannel)
 	slackClient.PostMessage(slackChannel, slack.MsgOptionText(response, false), slack.MsgOptionAttachments(attachment))
 }
 

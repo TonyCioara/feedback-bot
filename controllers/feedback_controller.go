@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -36,6 +37,16 @@ func CreateFeedbackFromDialog(dialog models.DialogSubmission) {
 
 // SendFeedbackCSV sends a user all of their feedback
 func SendFeedbackCSV(api *slack.Client, action slackevents.MessageAction) {
+	sendFeedback(api, action, "CSV")
+}
+
+// SendFeedbackSheet sends a user all of their feedback
+func SendFeedbackSheet(api *slack.Client, action slackevents.MessageAction) {
+	sendFeedback(api, action, "sheet")
+}
+
+// SendFeedback sends a user all of their feedback
+func sendFeedback(api *slack.Client, action slackevents.MessageAction, feedbackType string) {
 
 	db := utils.StartAndMigrateDB()
 	defer db.Close()
@@ -44,7 +55,7 @@ func SendFeedbackCSV(api *slack.Client, action slackevents.MessageAction) {
 
 	db.Where("user_id = ?", action.User.ID).Find(&feedbacks)
 
-	csvName := "Feedback_" + action.User.Name + "_" + time.Now().Format("2006-01-02")
+	fileName := "Feedback_" + action.User.Name + "_" + time.Now().Format("2006-01-02")
 	row1 := []string{"ID", "Created", "Sender", "Type", "Good", "Better", "Best"}
 	rows := [][]string{row1}
 	for _, feedback := range feedbacks {
@@ -53,21 +64,30 @@ func SendFeedbackCSV(api *slack.Client, action slackevents.MessageAction) {
 			feedback.FeedbackType, feedback.Good, feedback.Better, feedback.Best}
 		rows = append(rows, row)
 	}
-	utils.WriteCSV(csvName, rows)
 
-	params := slack.FileUploadParameters{
-		Title:    csvName,
-		File:     csvName,
-		Filename: csvName,
-		Channels: []string{action.User.ID},
-	}
-	var _, err = api.UploadFile(params)
-	if err != nil {
-		log.Fatalf("Error: %s\n", err)
-		return
+	switch ft := feedbackType; ft {
+	case "sheet":
+		fmt.Println("GOT TO 1")
+		CreateSpreadsheet(fileName, rows)
+	case "CSV":
+		fmt.Println("GOT TO 2")
+		utils.WriteCSV(fileName, rows)
+
+		params := slack.FileUploadParameters{
+			Title:    fileName,
+			File:     fileName,
+			Filename: fileName,
+			Channels: []string{action.User.ID},
+		}
+		var _, err = api.UploadFile(params)
+		if err != nil {
+			log.Fatalf("Error: %s\n", err)
+			return
+		}
+
+		utils.DeleteFile("./" + fileName)
 	}
 
-	utils.DeleteFile("./" + csvName)
 }
 
 // DeleteFeedbackWithID deletes feedback given an ID

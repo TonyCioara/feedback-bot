@@ -22,7 +22,8 @@ func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
 	case "seeFeedback":
 		SendFeedbackCSV(api, action)
 	case "moreHelp":
-		SendFeedbackSheet(api, action)
+		// SendFeedbackSheet(api, action)
+		SsTest()
 	}
 }
 

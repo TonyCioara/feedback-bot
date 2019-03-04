@@ -49,3 +49,21 @@ func CreateSpreadsheet(name string, rows [][]string) {
 
 	fmt.Println("Spreadsheet:", ss)
 }
+
+func SsTest() {
+	service, err := spreadsheet.NewService()
+
+	if err != nil {
+		log.Fatalf("Error loading spreadsheet: %s", err)
+	}
+
+	ssID := "1wgZlvO4DgtQJb98XrV2-ZA7b0vfSgCTPpHrg6YPIapc"
+
+	spreadsheet, err := service.FetchSpreadsheet(ssID)
+
+	if err != nil {
+		log.Fatalf("Error loading spreadsheet: %s", err)
+	}
+
+	fmt.Println("SS:", spreadsheet)
+}

@@ -20,10 +20,9 @@ func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
 	case "sendFeedback":
 		SendFeedbackSurvey(api, action)
 	case "seeFeedback":
-		SendFeedbackCSV(api, action)
+		SendFeedbackCSV(api, action.User.ID, action.User.Name, []string{})
 	case "moreHelp":
-		// SendFeedbackSheet(api, action)
-		SsTest()
+		SendMoreHelp(api, action)
 	}
 }
 
@@ -57,7 +56,7 @@ func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 func SendMoreHelp(api *slack.Client, action slackevents.MessageAction) {
 
 	response :=
-		"To query feedback use: \n   - `find param_name=param` \n   - Example: `find Type=intensives` \nTo delete feedback by id use: * `delete ID`"
+		"To query feedback use: \n   - `find param_name=param` \n   - Example: `find Type=intensives Sender=steve` \nTo delete feedback by id use: \n   - `delete ID` \n   - Example: `delete 28` "
 
 	fmt.Println("Channel:", action.User.ID)
 	api.NewRTM().PostMessage(action.Channel.ID, slack.MsgOptionText(response, false))

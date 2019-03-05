@@ -20,6 +20,7 @@ const helpMessage = "type in '@feedback-bot'"
 CreateSlackClient sets up the slack RTM (real-timemessaging) client library,
 initiating the socket connection and returning the client.
 */
+
 func CreateSlackClient(apiKey string) *slack.RTM {
 	api := slack.New(apiKey)
 	go SetUpEventsAPI(api)
@@ -75,7 +76,7 @@ func RespondToEvents(slackClient *slack.RTM) {
 			// message := strings.Replace(ev.Msg.Text, botTagString, "", -1)
 			message := ev.Msg.Text
 
-			go controllers.SendHelp(slackClient, message, ev.Channel)
+			go controllers.MessageReceived(slackClient, message, ev)
 		case *slack.IMCreatedEvent:
 			go controllers.Greet(slackClient, ev.Channel.ID)
 		}

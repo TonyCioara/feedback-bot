@@ -13,11 +13,11 @@ func MessageReceived(slackClient *slack.RTM, message string, slackEvent *slack.M
 	elements := strings.Split(message, " ")
 	switch first := elements[0]; first {
 	case "help":
-		SendHelp(slackClient, slackEvent.Channel)
+		go SendHelp(slackClient, slackEvent.Channel)
 	case "find":
-		FindFeedback(slackClient, slackEvent, elements)
+		go FindFeedback(slackClient, slackEvent, elements)
 	case "delete":
-		DeleteFeedback(slackClient, slackEvent, elements)
+		go DeleteFeedback(slackClient, slackEvent, elements)
 	}
 
 }

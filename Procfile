@@ -1,1 +1,1 @@
-web: goslackit
+web: feedback-bot

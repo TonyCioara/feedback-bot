@@ -13,6 +13,7 @@ func StartAndMigrateDB() *gorm.DB {
 		panic("failed to connect database")
 	}
 	db.AutoMigrate(&models.Feedback{})
+	db.AutoMigrate(&models.User{})
 
 	fmt.Println("Got here!")
 	return db

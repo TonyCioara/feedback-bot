@@ -23,16 +23,31 @@ func CreateFeedbackFromDialog(dialog models.DialogSubmission) {
 	}
 
 	feedback := models.Feedback{
-		UserID:   dialog.Submission["selectUser"],
-		SenderID: dialog.User["id"],
-		Sender:   dialog.User["name"],
-		Good:     dialog.Submission["good"],
-		Better:   dialog.Submission["better"],
-		Best:     dialog.Submission["best"],
-		Type:     ftype,
+		UserID:     dialog.Submission["selectUser"],
+		SenderID:   dialog.User["id"],
+		Sender:     dialog.User["name"],
+		Good:       dialog.Submission["good"],
+		Better:     dialog.Submission["better"],
+		Best:       dialog.Submission["best"],
+		Type:       ftype,
+		SentWeekly: false,
 	}
 
 	db.Create(&feedback)
+
+	var user models.User
+
+	db.Where("user_id = ?", dialog.Submission["selectUser"]).First(&user)
+
+	if user.ID != 0 {
+		return
+	}
+	user = models.User{
+		UserID:             dialog.Submission["selectUser"],
+		ActiveSubscription: true,
+	}
+
+	db.Create(&user)
 }
 
 // SendFeedbackCSV sends a user all of their feedback
@@ -106,4 +121,73 @@ func DeleteFeedback(slackClient *slack.RTM, slackEvent *slack.MessageEvent, elem
 
 	db.Delete(&feedback)
 	slackClient.PostMessage(slackEvent.Channel, slack.MsgOptionText("Success", false))
+}
+
+// DeliverWeeklyFeedback sends users all feedback from the past week
+func DeliverWeeklyFeedback(apiKey string) {
+	api := slack.New(apiKey)
+
+	db := utils.StartAndMigrateDB()
+	defer db.Close()
+
+	var feedbacks []models.Feedback
+
+	db.Where("sent_weekly = ?", false).Find(&feedbacks)
+
+	feedbackMap := make(map[string][][]string)
+
+	row1 := []string{"ID", "Created", "Sender", "Type", "Good", "Better", "Best"}
+
+	for _, feedback := range feedbacks {
+		var id = strconv.FormatUint(uint64(feedback.ID), 10)
+		row := []string{id, feedback.CreatedAt.Format("2006-01-02"), feedback.Sender,
+			feedback.Type, feedback.Good, feedback.Better, feedback.Best}
+
+		if feedbackMap[feedback.UserID] == nil {
+			feedbackMap[feedback.UserID] = [][]string{row1, row}
+		} else {
+			feedbackMap[feedback.UserID] = append(feedbackMap[feedback.UserID], row)
+		}
+		feedback.SentWeekly = true
+		db.Save(&feedback)
+	}
+
+	done := make(chan bool)
+
+	for key, value := range feedbackMap {
+		go func(key string, value [][]string) {
+			var user models.User
+			db.Where("user_id = ?", key).First(&user)
+
+			if user.ActiveSubscription == false {
+				return
+			}
+
+			fileName := "Weekly_Feedback_" + key + "_" + time.Now().Format("2006-01-02") + ".csv"
+
+			utils.WriteCSV(fileName, value)
+
+			params := slack.FileUploadParameters{
+				Title:          fileName,
+				File:           fileName,
+				Filename:       fileName,
+				InitialComment: "*Here is your weekly feedback!* \n   - To unsubscribe from weekly feedback type `unsubscribe` \n   - For more information type `help`",
+				Channels:       []string{user.UserID},
+			}
+			var _, err = api.UploadFile(params)
+			if err != nil {
+				log.Fatalf("Error: %s\n", err)
+				return
+			}
+
+			utils.DeleteFile("./" + fileName)
+
+			done <- true
+		}(key, value)
+	}
+
+	for i := 0; i < len(feedbackMap); i++ {
+		<-done
+	}
+
 }

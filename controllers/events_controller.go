@@ -56,7 +56,7 @@ func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
 func SendMoreHelp(api *slack.Client, action slackevents.MessageAction) {
 
 	response :=
-		"To query feedback use: \n   - `find param_name=param` \n   - Example: `find Type=intensives Sender=steve` \nTo delete feedback by id use: \n   - `delete ID` \n   - Example: `delete 28` "
+		"*Here are a few useful commands:*\nTo query feedback use: \n   - `find param_name=param` \n   - Example: `find Type=intensives Sender=steve` \nTo delete feedback use: \n   - `delete ID` \n   - Example: `delete 28` \nTo subscribe to weekly feedback use: \n   - `subscribe` \nTo unsubscribe from weekly feedback use: \n   - `unsubscribe` "
 
 	fmt.Println("Channel:", action.User.ID)
 	api.NewRTM().PostMessage(action.Channel.ID, slack.MsgOptionText(response, false))

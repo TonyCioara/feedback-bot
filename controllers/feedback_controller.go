@@ -125,6 +125,7 @@ func DeleteFeedback(slackClient *slack.RTM, slackEvent *slack.MessageEvent, elem
 
 // DeliverWeeklyFeedback sends users all feedback from the past week
 func DeliverWeeklyFeedback(apiKey string) {
+	fmt.Println("02) Weekly Feedback")
 	api := slack.New(apiKey)
 
 	db := utils.StartAndMigrateDB()
@@ -151,6 +152,7 @@ func DeliverWeeklyFeedback(apiKey string) {
 		feedback.SentWeekly = true
 		db.Save(&feedback)
 	}
+	fmt.Println("03) Weekly Feedback")
 
 	done := make(chan bool)
 
@@ -185,9 +187,11 @@ func DeliverWeeklyFeedback(apiKey string) {
 			done <- true
 		}(key, value)
 	}
+	fmt.Println("04) Weekly Feedback")
 
 	for i := 0; i < len(feedbackMap); i++ {
 		<-done
 	}
 
+	fmt.Println("05) Weekly Feedback")
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/TonyCioara/feedback-bot/controllers"
@@ -17,6 +18,7 @@ func main() {
 	botToken := os.Getenv("BOT_OAUTH_ACCESS_TOKEN")
 	if len(os.Args) >= 2 {
 		if os.Args[1] == "weekly_feedback" {
+			fmt.Println("01) Weekly Feedback")
 			controllers.DeliverWeeklyFeedback(botToken)
 			return
 		}

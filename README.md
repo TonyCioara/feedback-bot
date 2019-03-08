@@ -1,7 +1,8 @@
 # <B>Feedback Bot</B>
 
-### Feedback Bot is an automated way of delivering and receiving one-to-one feedback over Slack.
-### The feedback format is encouraging and at the same time constructive (Good-Better-Best).
+Feedback Bot is an automated way of delivering and receiving one-to-one feedback over Slack.
+
+The feedback format is encouraging and at the same time constructive (Good-Better-Best).
 
 ## <B>Usage:</B>
 - #### Send feedback: Generate a feedback survey and send feedback to a user in your slack.

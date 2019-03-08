@@ -21,6 +21,9 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289 h1:U+DzmGUpc/dOjREgbyyChPhdDIFwPYnVk+/5YcAa194=
 github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289/go.mod h1:xN/JuLBIz4bjkxNmByTiV1IbhfnYb6oo99phBn4Eqhc=
+github.com/droxey/goslackit v0.0.0-20190212191025-3f9dc7e7815b/go.mod h1:21L5OJTzF16okxTqjmzYXh1H6SaPexqW/vx5oCk0720=
+github.com/droxey/goslackit v0.0.0-20190213205101-687bfde8294d h1:WpR77hGcczwPPyP1IgR3oH38CGl1wCFJSRNN6f4NfCo=
+github.com/droxey/goslackit v0.0.0-20190213205101-687bfde8294d/go.mod h1:a0W/f++Fc1Zi3AlQbjD/nkWIjT7kH690BO2mpA2oW/E=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 h1:Yzb9+7DPaBjB8zlTR87/ElzFsnQfuHnVUVqpZZIcV5Y=
 github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5/go.mod h1:a2zkGnVExMxdzMo3M0Hi/3sEU+cWnZpSni0O6/Yb/P0=

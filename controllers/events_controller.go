@@ -3,31 +3,66 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
 
 	"github.com/TonyCioara/feedback-bot/models"
-	"github.com/TonyCioara/feedback-bot/utils"
 
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
-
-	"github.com/nlopes/slack"
 	"github.com/nlopes/slack/slackevents"
 )
 
+// SetUpEventsAPI sets up the events api
+func SetUpEventsAPI() {
+	http.HandleFunc("/events-endpoint", func(w http.ResponseWriter, r *http.Request) {
+		token := os.Getenv("VERIFICATION_TOKEN")
+
+		data, _ := ioutil.ReadAll(r.Body)
+		body := string(data)
+		body, _ = url.QueryUnescape(body)
+		body = strings.Replace(body, "payload=", "", 1)
+
+		// Update to check type, then parse into custom model for dialogs and actionEvent for actionEvent
+		actionEvent, e := slackevents.ParseActionEvent(body, slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: token}))
+		if e != nil {
+			log.Fatalf("Something went wrong: %s", e)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
+		switch et := actionEvent.Type; et {
+		case "interactive_message":
+			go ButtonClicked(actionEvent)
+		case "dialog_submission":
+			go DialogReceived(body)
+		}
+	})
+
+	port := ":" + os.Getenv("PORT")
+	if port == ":" {
+		port = ":3000"
+	}
+
+	fmt.Println("[INFO] Server listening on port", port)
+	http.ListenAndServe(port, nil)
+}
+
 // ButtonClicked is responsible for handling button clicking
-func ButtonClicked(api *slack.Client, action slackevents.MessageAction) {
+func ButtonClicked(action slackevents.MessageAction) {
 	switch value := action.Actions[0].Value; value {
 	case "sendFeedback":
-		SendFeedbackSurvey(api, action)
+		SendFeedbackSurvey(action)
 	case "seeFeedback":
-		SendFeedbackCSV(api, action.User.ID, action.User.Name, []string{})
+		SendFeedbackCSV(action.User.ID, action.User.Name, []string{})
 	case "moreHelp":
-		SendMoreHelp(api, action)
+		SendMoreHelp(action)
 	}
 }
 
 // DialogReceived is responsible for handling received dialogs
-func DialogReceived(api *slack.Client, payloadString string) {
+func DialogReceived(payloadString string) {
 	byteString := []byte(payloadString)
 	dialog := models.DialogSubmission{}
 	err := json.Unmarshal(byteString, &dialog)
@@ -37,27 +72,4 @@ func DialogReceived(api *slack.Client, payloadString string) {
 	}
 
 	CreateFeedbackFromDialog(dialog)
-
-}
-
-// SendFeedbackSurvey sends the user a feedback survey
-func SendFeedbackSurvey(api *slack.Client, action slackevents.MessageAction) {
-
-	dialog := utils.GenerateFeedbackSurvey(action.TriggerID, action.CallbackID)
-
-	err := api.OpenDialog(action.TriggerID, dialog)
-
-	if err != nil {
-		log.Fatalf("Error sending survey: %s", err)
-	}
-}
-
-// SendMoreHelp sends the user information about the commands
-func SendMoreHelp(api *slack.Client, action slackevents.MessageAction) {
-
-	response :=
-		"*Here are a few useful commands:*\nTo query feedback use: \n   - `find param_name=param` \n   - Example: `find Type=intensives Sender=steve` \nTo delete feedback use: \n   - `delete ID` \n   - Example: `delete 28` \nTo subscribe to weekly feedback use: \n   - `subscribe` \nTo unsubscribe from weekly feedback use: \n   - `unsubscribe` "
-
-	fmt.Println("Channel:", action.User.ID)
-	api.NewRTM().PostMessage(action.Channel.ID, slack.MsgOptionText(response, false))
 }

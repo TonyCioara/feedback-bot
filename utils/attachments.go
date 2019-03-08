@@ -77,7 +77,7 @@ func GenerateFeedbackSurvey(triggerID, callbackID string) slack.Dialog {
 	}
 	var dialogElement3 slack.DialogElement = map[string]string{
 		"type":     "text",
-		"label":    "If you selected others please elaborate",
+		"label":    "If you selected Other please elaborate",
 		"name":     "other",
 		"optional": "true",
 	}

@@ -8,14 +8,15 @@ import (
 	"time"
 
 	"github.com/TonyCioara/feedback-bot/models"
+	"github.com/TonyCioara/feedback-bot/server"
 	"github.com/TonyCioara/feedback-bot/utils"
 	"github.com/nlopes/slack"
+	"github.com/nlopes/slack/slackevents"
 )
 
 // CreateFeedbackFromDialog creates feedback given a dialog
 func CreateFeedbackFromDialog(dialog models.DialogSubmission) {
-	db := utils.StartAndMigrateDB()
-	defer db.Close()
+	db := server.DB
 
 	ftype := dialog.Submission["feedbackType"]
 	if ftype == "other" {
@@ -50,10 +51,23 @@ func CreateFeedbackFromDialog(dialog models.DialogSubmission) {
 	db.Create(&user)
 }
 
+// SendFeedbackSurvey sends the user a feedback survey
+func SendFeedbackSurvey(action slackevents.MessageAction) {
+	api := server.API
+
+	dialog := utils.GenerateFeedbackSurvey(action.TriggerID, action.CallbackID)
+
+	err := api.OpenDialog(action.TriggerID, dialog)
+
+	if err != nil {
+		log.Fatalf("Error sending survey: %s", err)
+	}
+}
+
 // SendFeedbackCSV sends a user all of their feedback
-func SendFeedbackCSV(api *slack.Client, userID, userName string, queryParams []string) {
-	db := utils.StartAndMigrateDB()
-	defer db.Close()
+func SendFeedbackCSV(userID, userName string, queryParams []string) {
+	db := server.DB
+	api := server.API
 
 	queryFeedback := map[string]interface{}{"user_id": userID}
 
@@ -65,7 +79,8 @@ func SendFeedbackCSV(api *slack.Client, userID, userName string, queryParams []s
 		if len(elements) != 2 {
 			continue
 		}
-		queryFeedback[elements[0]] = elements[1]
+		key := strings.ToLower(elements[0])
+		queryFeedback[key] = elements[1]
 	}
 
 	var feedbacks []models.Feedback
@@ -101,9 +116,9 @@ func SendFeedbackCSV(api *slack.Client, userID, userName string, queryParams []s
 }
 
 // DeleteFeedback deletes feedback
-func DeleteFeedback(slackClient *slack.RTM, slackEvent *slack.MessageEvent, elements []string) {
-	db := utils.StartAndMigrateDB()
-	defer db.Close()
+func DeleteFeedback(slackEvent *slack.MessageEvent, elements []string) {
+	db := server.DB
+	slackClient := server.RTM
 
 	userID := slackEvent.User
 	ID := elements[1]
@@ -124,11 +139,9 @@ func DeleteFeedback(slackClient *slack.RTM, slackEvent *slack.MessageEvent, elem
 }
 
 // DeliverWeeklyFeedback sends users all feedback from the past week
-func DeliverWeeklyFeedback(apiKey string) {
-	api := slack.New(apiKey)
-
-	db := utils.StartAndMigrateDB()
-	defer db.Close()
+func DeliverWeeklyFeedback() {
+	db := server.DB
+	api := server.RTM
 
 	var feedbacks []models.Feedback
 

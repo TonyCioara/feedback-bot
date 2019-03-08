@@ -2,9 +2,9 @@
 
 <img width="647" alt="screenshot 2019-03-07 19 00 26" src="https://user-images.githubusercontent.com/29664539/54006079-c3192d00-4110-11e9-8cfe-b54dfe74c3c8.png">
 
-Feedback Bot is an automated way of delivering and receiving one-to-one feedback over Slack.
+- ### Feedback Bot is an automated way of delivering and receiving one-to-one feedback over Slack.
 
-The feedback format is encouraging and at the same time constructive (Good-Better-Best).
+- ### The feedback format is encouraging and at the same time constructive (Good-Better-Best).
 
 ## <B>Usage:</B>
 

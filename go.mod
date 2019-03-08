@@ -17,7 +17,6 @@ require (
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
-	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/nlopes/slack v0.5.0
 	github.com/peterh/liner v1.1.0 // indirect
 	github.com/pkg/errors v0.8.1 // indirect

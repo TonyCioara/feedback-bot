@@ -1,17 +1,18 @@
 # <B>Feedback Bot</B>
 
+<img width="647" alt="screenshot 2019-03-07 19 00 26" src="https://user-images.githubusercontent.com/29664539/54006079-c3192d00-4110-11e9-8cfe-b54dfe74c3c8.png">
+
 Feedback Bot is an automated way of delivering and receiving one-to-one feedback over Slack.
 
 The feedback format is encouraging and at the same time constructive (Good-Better-Best).
 
 ## <B>Usage:</B>
-<img width="647" alt="screenshot 2019-03-07 19 00 26" src="https://user-images.githubusercontent.com/29664539/54006079-c3192d00-4110-11e9-8cfe-b54dfe74c3c8.png">
 
 - #### Send feedback: Generate a feedback survey and send feedback to a user in your slack.
-<img width="524" alt="screenshot 2019-03-07 19 00 46" src="https://user-images.githubusercontent.com/29664539/54006086-c6141d80-4110-11e9-82eb-e01f04511015.png">
+<img width="511" alt="screenshot 2019-03-07 19 42 28" src="https://user-images.githubusercontent.com/29664539/54006211-3327b300-4111-11e9-8356-c168d2b0d998.png">
 
 - #### Receive all your feedback weekly or on request in CSV format.
-<img width="1349" alt="screenshot 2019-03-07 19 37 55" src="https://user-images.githubusercontent.com/29664539/54006081-c4e2f080-4110-11e9-8dc1-33b7f22da945.png">
+<img width="656" alt="screenshot 2019-03-07 19 42 10" src="https://user-images.githubusercontent.com/29664539/54006212-3622a380-4111-11e9-948b-aab1c3821b34.png">
 
 - #### Chat with the bot and do things such as:
   - #### Subscribe and unsubscribe from weekly feedback notifications.

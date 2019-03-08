@@ -22,8 +22,9 @@ The feedback format is encouraging and at the same time constructive (Good-Bette
 ## <B>Installation</B>
 #### 1. Go to https://api.slack.com/apps and create a new App
 #### 2. Enable `Incoming Webhooks` and `Interactive Components`
-#### 3. Create a PostgresQL database and name it `feedback-bot-db`
-#### 4. Create an .env file with the following environment variables:
+#### 3. Fork and clone the project
+#### 4. Create a PostgresQL database and name it `feedback-bot-db`
+#### 5. Create an .env file in the root of your project, with the following environment variables:
 ```
 BOT_OAUTH_ACCESS_TOKEN=xoxb-11439472923-880521654032-Sx7Qv46ofo9XODBqAc9pQ5Cl
 VERIFICATION_TOKEN=9BP11qDFQwPP6seaZQeE9QLC
@@ -34,8 +35,8 @@ DBPORT=5432
 DBNAME=database-name
 ```
 You can get the BOT_OAUTH_ACCESS_TOKEN and VERIFICATION_TOKEN from the Slack Dashboard
-#### 5. Deploy or run on your localhost using Ngrok
-#### 6. Go to your Apps `Interactive Components` section and set the request URL to: `your-app-url/events-endpoint`
+#### 6. Deploy or run on your localhost using Ngrok
+#### 7. Go to your Apps `Interactive Components` section and set the request URL to: `your-app-url/events-endpoint`
 
 ## <B>More</B>
 #### If you want to change the feedback type options in the surveys:

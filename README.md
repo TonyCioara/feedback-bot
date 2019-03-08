@@ -23,7 +23,7 @@ The feedback format is encouraging and at the same time constructive (Good-Bette
 #### 1. Go to https://api.slack.com/apps and create a new App
 #### 2. Enable `Incoming Webhooks` and `Interactive Components`
 #### 3. Create a PostgresQL database and name it `feedback-bot-db`
-#### 4. Set your environment variables:
+#### 4. Create an .env file with the following environment variables:
 ```
 BOT_OAUTH_ACCESS_TOKEN=xoxb-11439472923-880521654032-Sx7Qv46ofo9XODBqAc9pQ5Cl
 VERIFICATION_TOKEN=9BP11qDFQwPP6seaZQeE9QLC

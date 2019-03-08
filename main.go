@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TonyCioara/feedback-bot/controllers"
 	"github.com/TonyCioara/feedback-bot/slack"
 
 	_ "github.com/joho/godotenv/autoload"
@@ -15,12 +14,11 @@ import (
 func main() {
 	// Set up my web server with port, router, etc.
 
-	if len(os.Args) >= 2 {
-		if os.Args[1] == "weekly_feedback" {
-			fmt.Println("Sending out Weekly Feedback")
-			controllers.DeliverWeeklyFeedback()
-			return
-		}
+	if len(os.Args) >= 2 && os.Args[1] == "weekly_feedback" {
+		fmt.Println("main: Starting Weekly Feedback Client")
+		slack.DeliverWeeklyFeedback()
+	} else {
+		fmt.Println("main: Starting Main Client")
+		slack.CreateSlackClient()
 	}
-	slack.CreateSlackClient()
 }

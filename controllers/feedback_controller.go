@@ -173,6 +173,7 @@ func DeliverWeeklyFeedback() {
 			db.Where("user_id = ?", key).First(&user)
 
 			if user.ActiveSubscription == false {
+				done <- true
 				return
 			}
 

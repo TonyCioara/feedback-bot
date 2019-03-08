@@ -1,24 +1,26 @@
 package slack
 
 import (
-	"os"
-
 	"github.com/TonyCioara/feedback-bot/controllers"
 	"github.com/TonyCioara/feedback-bot/server"
-	"github.com/nlopes/slack"
 )
 
 // CreateSlackClient creates and api, rtm and sets up events responding
 func CreateSlackClient() {
 	server.StartAndMigrateDB()
-
-	apiKey := os.Getenv("BOT_OAUTH_ACCESS_TOKEN")
-	server.API = slack.New(apiKey)
+	server.InitializeAPIAndRTM()
 
 	go controllers.SetUpEventsAPI()
-
-	server.RTM = server.API.NewRTM()
 	go server.RTM.ManageConnection()
 
 	controllers.RespondToEvents()
+}
+
+// DeliverWeeklyFeedback delivers last week's feedback to
+// all users who are subscribed to Weekly Feedback
+func DeliverWeeklyFeedback() {
+	server.StartAndMigrateDB()
+	server.InitializeAPIAndRTM()
+
+	controllers.DeliverWeeklyFeedback()
 }

@@ -1,5 +1,7 @@
 # github.com/gorilla/websocket v1.4.0
 github.com/gorilla/websocket
+# github.com/jasonlvhit/gocron v0.0.0-20190121134850-6771d4b492ba
+github.com/jasonlvhit/gocron
 # github.com/jinzhu/gorm v1.9.2
 github.com/jinzhu/gorm
 github.com/jinzhu/gorm/dialects/postgres

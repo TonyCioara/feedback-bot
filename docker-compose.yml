@@ -1,13 +1,12 @@
 version: '2'
 services:
-  my-golang-app-run:
-    container_name: my-golang-app-run
+  feedback-bot-run:
+    container_name: feedback-bot-run
     build: .
     command: go run main.go
     volumes:
-      - ./src:/go/src/app
-    working_dir: /go/src/app
+      - .:/go/src/app
     ports:
-      - "3000:3000"
+      - "3003:3000"
     environment:
       PORT: 3000

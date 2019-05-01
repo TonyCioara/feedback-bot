@@ -97,7 +97,7 @@ func SendFeedbackCSV(userID, userName string, queryParams []string) {
 		rows = append(rows, row)
 	}
 
-	utils.WriteCSV(fileName, rows)
+	_ = utils.WriteCSV(fileName, rows)
 
 	params := slack.FileUploadParameters{
 		Title:    fileName,
@@ -179,7 +179,7 @@ func DeliverWeeklyFeedback() {
 
 			fileName := "Weekly_Feedback_" + key + "_" + time.Now().Format("2006-01-02") + ".csv"
 
-			utils.WriteCSV(fileName, value)
+			_ = utils.WriteCSV(fileName, value)
 
 			params := slack.FileUploadParameters{
 				Title:          fileName,

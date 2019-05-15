@@ -36,7 +36,7 @@ DBPASSWORD=postgres
 DBHOST=feedback-bot-db
 DBPORT=5432
 
-# These are samples. Please get real keys from slack API:
+# These are samples. Please get real keys from the slack API dashboard:
 BOT_OAUTH_ACCESS_TOKEN=xoxb-11439472923-880521654032-Sx7Qv46ofo9XODBqAc9pQ5Cl
 VERIFICATION_TOKEN=9BP11qDFQwPP6seaZQeE9QLC
 ```

@@ -1,8 +1,8 @@
 package server
 
 import (
-	"log"
 	"os"
+	"log"
 
 	"github.com/TonyCioara/feedback-bot/models"
 	"github.com/jinzhu/gorm"
@@ -21,7 +21,7 @@ func StartAndMigrateDB() {
 	port := os.Getenv("DBPORT")
 	name := os.Getenv("DBNAME")
 
-	params := "host=" + host + " port=" + port + " user=" + user + " dbname=" + name + " password=" + password + " sslmode=disable"
+	params := "host=" + host + " port=" + port + " user=" + user + " password=" + password + " dbname=" + name + " sslmode=disable"
 
 	db, err := gorm.Open("postgres", params)
 	if err != nil {

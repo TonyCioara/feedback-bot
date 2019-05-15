@@ -1,13 +1,41 @@
-version: '2'
+version: '3.7'
+
 services:
-  my-golang-app-run:
-    container_name: my-golang-app-run
-    build: .
-    command: go run main.go
-    volumes:
-      - ./src:/go/src/app
-    working_dir: /go/src/app
+  feedback-bot-db:
+    image: postgres:11.3-alpine
+    restart: always
     ports:
-      - "3000:3000"
+      - ${DBPORT}:${DBPORT}
     environment:
-      PORT: 3000
+      POSTGRES_PASSWORD: ${DBPASSWORD}
+      POSTGRES_USER: ${DBUSER}
+      POSTGRES_DB: ${DBNAME}
+    volumes:
+      - feedback-bot-data:/var/lib/postgresql/data
+  feedback-bot-server:
+    build: .
+    command:
+      [
+        "./wait-for-it.sh",
+        "feedback-bot-db:5432",
+        "--",
+        "go",
+        "run",
+        "main.go"
+      ]
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+      DBHOST: feedback-bot-db
+      DBPORT: ${DBPORT}
+      DBNAME: ${DBNAME}
+      DBUSER: ${DBUSER}
+      DBPASSWORD: ${DBPASSWORD}
+      BOT_OAUTH_ACCESS_TOKEN: ${BOT_OAUTH_ACCESS_TOKEN}    
+      VERIFICATION_TOKEN: ${VERIFICATION_TOKEN}
+    depends_on:
+      - feedback-bot-db
+
+volumes:
+  feedback-bot-data:

@@ -26,14 +26,19 @@ The feedback format is encouraging and at the same time constructive (Good-Bette
 #### 4. Create a PostgresQL database and name it `feedback-bot-db`
 #### 5. Create an .env file in the root of your project, with the following environment variables:
 ```
+# Can be edited:
+PORT=3001
+DBNAME=feedback-bot
+
+# Do not edit:
+DBUSER=postgres
+DBPASSWORD=postgres
+DBHOST=feedback-bot-db
+DBPORT=5432
+
+# These are samples. Please get real keys from slack API:
 BOT_OAUTH_ACCESS_TOKEN=xoxb-11439472923-880521654032-Sx7Qv46ofo9XODBqAc9pQ5Cl
 VERIFICATION_TOKEN=9BP11qDFQwPP6seaZQeE9QLC
-DBUSER=database-user
-DBPASSWORD=database-password
-DBHOST=database-host
-DBPORT=5432
-PORT=3001
-DBNAME=database-name
 ```
 You can get the BOT_OAUTH_ACCESS_TOKEN and VERIFICATION_TOKEN from the Slack Dashboard
 #### 6. Run the server:

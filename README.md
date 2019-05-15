@@ -32,10 +32,14 @@ DBUSER=database-user
 DBPASSWORD=database-password
 DBHOST=database-host
 DBPORT=5432
+PORT=3000
 DBNAME=database-name
 ```
 You can get the BOT_OAUTH_ACCESS_TOKEN and VERIFICATION_TOKEN from the Slack Dashboard
-#### 6. Deploy or run on your localhost using Ngrok
+#### 6. Option 1) Deploy to Heroku
+####    Option 2) Run using Docker `docker-compose up`
+####              Expose the local URL using Ngrok
+            
 #### 7. Go to your Apps `Interactive Components` section and set the request URL to: `your-app-url/events-endpoint`
 
 ## <B>More</B>

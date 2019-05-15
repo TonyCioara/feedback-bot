@@ -7,7 +7,7 @@ import (
 )
 
 // WriteCSV writes a csv
-func WriteCSV(name string, rows [][]string) {
+func WriteCSV(name string, rows [][]string) error {
 
 	f, err := os.Create(name)
 	if err != nil {
@@ -23,4 +23,5 @@ func WriteCSV(name string, rows [][]string) {
 
 	w := csv.NewWriter(f)
 	err = w.WriteAll(rows)
+	return err
 }

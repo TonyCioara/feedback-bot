@@ -32,12 +32,12 @@ DBUSER=database-user
 DBPASSWORD=database-password
 DBHOST=database-host
 DBPORT=5432
-PORT=3000
+PORT=3001
 DBNAME=database-name
 ```
 You can get the BOT_OAUTH_ACCESS_TOKEN and VERIFICATION_TOKEN from the Slack Dashboard
-#### 6. Run the server
-- ##### Option 1: Deploy to Heroku
+#### 6. Run the server:
+- ##### Deploy to Heroku
 #### Or 
 - ##### Run using Docker `docker-compose up`, then Expose the local URL using Ngrok
             
